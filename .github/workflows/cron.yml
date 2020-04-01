@@ -1,6 +1,6 @@
 on:
     schedule:
-      - cron: '30 4 * * *'
+      - cron: '45 4 * * *'
 jobs:
   cron:
     services:
@@ -29,4 +29,4 @@ jobs:
             POSTGIS_HOST: localhost
             POSTGIS_PORT: ${{ job.services.postgres.ports[5432] }}
             PAT : ${{ secrets.PAT }}
-        run: julia -e 'using COVID_Tracking_Clean; COVID_Tracking_Clean.main()'
+        run: julia --proj -e 'using Pkg; Pkg.instantiate(); using COVID_Tracking_Clean; COVID_Tracking_Clean.main()'
