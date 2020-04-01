@@ -60,6 +60,7 @@ function main()
               port = parse(Int, ENV["POSTGIS_PORT"]))
     execute(opt.conn,
     """
+    CREATE EXTENSION IF NOT EXISTS btree_gist;
     CREATE TABLE IF NOT EXISTS daily (
         state char(2) NOT NULL,
         checkts timestamp NOT NULL,
