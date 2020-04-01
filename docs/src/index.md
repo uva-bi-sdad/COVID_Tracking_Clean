@@ -15,6 +15,6 @@ The data schema is:
 
 per the specification from the COVID Tracking Project [metadata](https://covidtracking.com/about-tracker).
 
-It runs daily at 20:00:00.000 UTC.
+It runs daily at `22:00:00.000 UTC`.
 
 This is a solution mostly in response to [COVID19Tracking/covid-tracking-api#11](https://github.com/COVID19Tracking/covid-tracking-api/issues/11).

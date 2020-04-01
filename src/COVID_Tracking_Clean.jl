@@ -55,7 +55,7 @@ function main()
     ENV["PAT"] = get(ENV, "PAT", "")
 
     opt = Opt("Nosferican",
-              ENV["GITHUB_TOKEN"],
+              ENV["PAT"],
               host = ENV["POSTGIS_HOST"],
               port = parse(Int, ENV["POSTGIS_PORT"]))
     execute(opt.conn,
