@@ -34,22 +34,25 @@ function find_shas(obj::GitHubPersonalAccessToken,
     # directory = "data"
     # file = "daily.tsv"
     # just_last = true
-
     vars = Dict("id" => id,
-                "path" => "$directory/$file",)
+                "path" => "$directory/$file",
+                # When first started publishing the quality checks
+                "since" => "2020-03-20T23:00:07Z",
+                "cursor" => nothing,
+                "first" => just_last ? 1 : 100)
     # The initial request finds out how many commits are for the file
     # and the SHA1 for the last 100 commits affecting that file
-    response = graphql(obj, "Init", vars, GITHUB_API_QUERY = GITHUB_API_QUERY)
+    response = graphql(obj, "Magic", vars, GITHUB_API_QUERY = GITHUB_API_QUERY)
     json = JSON3.read(response.Data)
     # Get the slug just in case
-    slug = json.data.total.nameWithOwner
+    slug = json.data.node.nameWithOwner
     # We store the total count of commits for a final check
-    total = json.data.total.defaultBranchRef.target.history.totalCount
+    total = json.data.node.defaultBranchRef.target.history.totalCount
     # We get the SHA1 for each of the file/versions
     shas = get_sha.(json.data.node.defaultBranchRef.target.history.edges, directory, file)
     just_last && return shas[1]
     # This strategy is valid while the total number of commits is below 1,000
-    @assert total <= 1_000 "Code needs to be updated for more than 1,000 commits!"
+    @assert total ≤ 1_000 "Code needs to be updated for more than 1,000 commits!"
     # If there are more than 100 commits we paginate
     while json.data.node.defaultBranchRef.target.history.pageInfo.hasNextPage
         response = graphql(opt.pat,
@@ -73,15 +76,14 @@ function get_tbl(obj::GitHubPersonalAccessToken, sha::AbstractString)
     response = restful(obj, "repos/COVID19Tracking/covid-tracking-data/git/blobs/$sha")
     @assert response.status == 200
     json = JSON3.read(String(response.body))
-    data = File(base64decode(json.content))
+    data = File(base64decode(json.content),
+                select = [:state, :positiveScore, :negativeScore, :negativeRegularScore, :commercialScore, :checkTimeEt]) |>
+        DataFrame |>
+        dropmissing!
     colnames = schema(data).names
     valid = all(elem -> elem ∈ colnames,
                 (:positiveScore, :negativeScore, :negativeRegularScore, :commercialScore))
     if valid
-        data = data |>
-            select(:state, :positiveScore, :negativeScore, :negativeRegularScore, :commercialScore, :checkTimeEt) |>
-            DataFrame
-        dropmissing!(data)
         data[!,:positiveScore] = isone.(data.positiveScore)
         data[!,:negativeScore] = isone.(data.negativeScore)
         data[!,:negativeRegularScore] = isone.(data.negativeRegularScore)
@@ -102,11 +104,10 @@ end
 Uses the Covid Tracking API to return the states/daily table.
 """
 function states_daily()
-    response = request("GET",
-                       "https://raw.githubusercontent.com/COVID19Tracking/covid-tracking-data/master/data/states_daily_4pm_et.csv")
+    response = request("GET", "https://covidtracking.com/api/states/daily.csv")
     @assert response.status == 200
     data = File(response.body) |>
-        select(:state, :dateChecked, :positive, :negative, :pending, :hospitalized, :death) |>
+        (tbl -> select(tbl, :state, :dateChecked, :positive, :negative, :pending, :hospitalized, :death)) |>
         DataFrame
     data[!,:dateChecked] = ZonedDateTime.(data.dateChecked, DateFormat("yyyy-mm-ddTHH:MM:SSz"))
     rename!(data, :dateChecked => :checkts)

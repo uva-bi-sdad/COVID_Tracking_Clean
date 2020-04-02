@@ -1,8 +1,8 @@
 using Test, Documenter, COVID_Tracking_Clean
 
-ENV["POSTGIS_HOST"] = get(ENV, "POSTGIS_HOST", "host.docker.internal")
-ENV["POSTGIS_PORT"] = get(ENV, "POSTGIS_PORT", "5432")
-ENV["GITHUB_TOKEN"] = get(ENV, "GITHUB_TOKEN", "")
+@testset "Dry Run" begin
+    @test COVID_Tracking_Clean.main(false)
+end
 
 @testset "Documentation" begin
     using Documenter, COVID_Tracking_Clean

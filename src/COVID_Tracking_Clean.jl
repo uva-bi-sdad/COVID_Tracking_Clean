@@ -5,8 +5,8 @@ This module is meant to clean the data from the COVID Tracking Project.
 """
 module COVID_Tracking_Clean
 using Diana: Client, GraphQLClient,
-            # HTTP
-            HTTP.request
+             # HTTP
+             HTTP.request
 using JSON3: JSON3
 using LibPQ: Connection, execute, load!,
              # TimeZones
@@ -49,7 +49,7 @@ end
 Performs the action to refresh the data.
 Latest data will be written to data/latest.tsv
 """
-function main()
+function main(deploy::Bool = true)
     ENV["POSTGIS_HOST"] = get(ENV, "POSTGIS_HOST", "localhost")
     ENV["POSTGIS_PORT"] = get(ENV, "POSTGIS_PORT", "5432")
     ENV["PAT"] = get(ENV, "PAT", "")
@@ -107,11 +107,13 @@ function main()
                      """) |>
         rowtable
     content = base64encode(take!(CSV.write(IOBuffer(), output, delim = '\t')));
-    restful(opt.pat, "repos/uva-bi-sdad/COVID_Tracking_Clean/contents/data/daily.tsv",
-            method = "PUT",
-            params = Dict("message" => "Updating data/states.tsv at $(now(utc_tz))",
-                          "content" => content,
-                          "sha" => find_shas(opt.pat, "MDEwOlJlcG9zaXRvcnkyNTIwNDUwOTQ=", "data", "daily.tsv", true)))
+    if deploy
+        restful(opt.pat, "repos/uva-bi-sdad/COVID_Tracking_Clean/contents/data/daily.tsv",
+                method = "PUT",
+                params = Dict("message" => "Updating data/states.tsv at $(now(utc_tz))",
+                              "content" => content,
+                              "sha" => find_shas(opt.pat, "MDEwOlJlcG9zaXRvcnkyNTIwNDUwOTQ=", "data", "daily.tsv", true)))
+    end
     true
 end
 

@@ -16,7 +16,7 @@ TableOperations = "ab02a1b2-a7df-11e8-156e-fb1833f50b87"
 TimeZones = "f269a46b-ccf7-5d73-abea-4c690281aa53"
 
 [compat]
-CSV = "0.5"
+CSV = "0.6"
 Diana = "0.2"
 JSON3 = "1"
 LibPQ = "1.2"

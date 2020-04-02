@@ -18,23 +18,10 @@ GitHub GraphQL query.
 """
 const GITHUB_API_QUERY =
 """
-query Init(\$id: ID!, \$path: String!, \$cursor: String) {
-  total: node(id: \$id) {
-    ... on Repository {
-      nameWithOwner
-      defaultBranchRef {
-        target {
-          ... on Commit {
-            history(path: \$path) {
-              totalCount
-            }
-          }
-        }
-      }
-    }
-  }
+query Magic(\$id: ID!, \$path: String!, \$since: GitTimestamp!, \$first: Int!, \$cursor: String) {
   node(id: \$id) {
     ... on Repository {
+      nameWithOwner
       defaultBranchRef {
         target {
           ... on Commit {
@@ -46,7 +33,8 @@ query Init(\$id: ID!, \$path: String!, \$cursor: String) {
   }
 }
 fragment History on Commit {
-  history(path: \$path, first: 100, after: \$cursor) {
+  history(path: \$path, since: \$since, first: \$first, after: \$cursor) {
+    totalCount
     pageInfo {
       hasNextPage
       endCursor
