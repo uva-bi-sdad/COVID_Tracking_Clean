@@ -1,19 +1,29 @@
 # COVID-19-COVID-Tracking-Clean
 
-| **Documentation** | **Continous Integration** |
-|:-----------------:|:-------------------------:|
-| [![][ddi]][ddu]   | [![CI][bsi]][bsu]         |
-| [![][li]][lu]     | [![CRON][croni]][cronu]   |
+This is a tool by the Network Systems Science and Advanced Computing (NSSAC) division of the Biocomplexity Institute & Initiative at University of Virginia.
+
+For more infomation on our [COVID-19 Research](https://nssac.github.io/covid-19/index) visit our website.
+
+| **Documentation** | **Continous Integration**        |
+|:-----------------:|:--------------------------------:|
+| [![][dsi]][dsu]   | [![CI][bsi]][bsu]                |
+| [![][ddi]][ddu]     | [![CRON][croni]][cronu]          |
+| [![][li]][lu]     | [![codecov][codecovi]](codecovu) |
 
 [ddi]: https://img.shields.io/badge/docs-dev-blue?style=plastic
 [ddu]: https://uva-bi-sdad.github.io/COVID_Tracking_Clean/dev/
+[dsi]: https://img.shields.io/badge/docs-stable-blue?style=plastic
+[dsu]: https://uva-bi-sdad.github.io/COVID_Tracking_Clean/stable/
 [li]: https://img.shields.io/github/license/uva-bi-sdad/COVID_Tracking_Clean?style=plastic
-[lu]: https://tldrlegal.com/license/-isc-license
+[lu]: https://choosealicense.com/licenses/zlib/
 
 [bsi]: https://github.com/uva-bi-sdad/COVID_Tracking_Clean/workflows/CI/badge.svg
 [bsu]: https://github.com/uva-bi-sdad/COVID_Tracking_Clean/actions?workflow=CI
 [croni]: https://github.com/uva-bi-sdad/COVID_Tracking_Clean/workflows/CRON/badge.svg
 [cronu]: https://github.com/uva-bi-sdad/COVID_Tracking_Clean/actions?workflow=CRON
+
+[codecovi]: https://codecov.io/gh/uva-bi-sdad/COVID_Tracking_Clean/branch/master/graph/badge.svg
+[codecovu]: https://codecov.io/gh/uva-bi-sdad/COVID_Tracking_Clean
 
 This repository takes data from: [COVID Tracking Data (CSV)](https://github.com/COVID19Tracking/covid-tracking-data) and provides a clean table under `data/daily.tsv`.
 
