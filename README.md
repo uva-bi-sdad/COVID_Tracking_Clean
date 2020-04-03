@@ -7,8 +7,8 @@ For more infomation on our [COVID-19 Research](https://nssac.github.io/covid-19/
 | **Documentation** | **Continous Integration**        |
 |:-----------------:|:--------------------------------:|
 | [![][dsi]][dsu]   | [![CI][bsi]][bsu]                |
-| [![][ddi]][ddu]     | [![CRON][croni]][cronu]          |
-| [![][li]][lu]     | [![codecov][codecovi]](codecovu) |
+| [![][ddi]][ddu]   | [![CRON][croni]][cronu]          |
+| [![][li]][lu]     | [![codecov][codecovi]][codecovu] |
 
 [ddi]: https://img.shields.io/badge/docs-dev-blue?style=plastic
 [ddu]: https://uva-bi-sdad.github.io/COVID_Tracking_Clean/dev/
