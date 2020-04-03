@@ -50,14 +50,14 @@ Performs the action to refresh the data.
 Latest data will be written to data/latest.tsv
 """
 function main(deploy::Bool = true)
-    ENV["POSTGIS_HOST"] = get(ENV, "POSTGIS_HOST", "localhost")
-    ENV["POSTGIS_PORT"] = get(ENV, "POSTGIS_PORT", "5432")
+    ENV["POSTGRES_HOST"] = get(ENV, "POSTGRES_HOST", "localhost")
+    ENV["POSTGRES_PORT"] = get(ENV, "POSTGRES_PORT", "5432")
     ENV["PAT"] = get(ENV, "PAT", "")
 
     opt = Opt("Nosferican",
               ENV["PAT"],
-              host = ENV["POSTGIS_HOST"],
-              port = parse(Int, ENV["POSTGIS_PORT"]))
+              host = ENV["POSTGRES_HOST"],
+              port = parse(Int, ENV["POSTGRES_PORT"]))
     execute(opt.conn,
     """
     CREATE EXTENSION IF NOT EXISTS btree_gist;

@@ -266,8 +266,8 @@ Structure for passing arguments to functions.
 ```julia-repl
 julia> opt = Opt("Nosferican",
                  ENV["GITHUB_TOKEN"],
-                 host = ENV["POSTGIS_HOST"],
-                 port = parse(Int, ENV["POSTGIS_PORT"]));
+                 host = ENV["POSTGRES_HOST"],
+                 port = parse(Int, ENV["POSTGRES_PORT"]));
 
 ```
 """
