@@ -83,7 +83,7 @@ function main(deploy::Bool = true)
               state char(2) NOT NULL,
               during timestamp NOT NULL,
               data_quality_grade varchar(2) NOT NULL,
-              as_of timestamp timestamp NOT NULL
+              as_of timestamp NOT NULL
             );
             """
             )
