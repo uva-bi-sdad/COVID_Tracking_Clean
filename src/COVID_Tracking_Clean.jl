@@ -184,7 +184,7 @@ function main(deploy::Bool = true)
           B.data_quality_grade
         FROM public.daily A
         LEFT JOIN public.data_quality_grades B ON A.state = B.state
-          AND B.during @ > A.checkts
+          AND B.during @> A.checkts
         ORDER BY
           state ASC,
           checkts ASC;
