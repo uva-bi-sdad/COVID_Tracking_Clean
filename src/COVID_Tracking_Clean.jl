@@ -82,8 +82,7 @@ function main(deploy::Bool = true)
             CREATE TABLE IF NOT EXISTS qc (
               state char(2) NOT NULL,
               during timestamp NOT NULL,
-              data_quality_grade varchar(2) NOT NULL,
-              as_of timestamp NOT NULL
+              data_quality_grade varchar(2) NOT NULL
             );
             """
             )
