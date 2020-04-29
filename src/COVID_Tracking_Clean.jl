@@ -37,7 +37,7 @@ import Base: show, summary
 # Constants
 const COVID_TRACKING_DT = DateFormat("y/m/d HH:MM Z")
 
-for (root, dirs, files) in walkdir(joinpath(@__DIR__, "src"))
+for (root, dirs, files) in walkdir(joinpath(@__DIR__))
     for file in files
         isequal("COVID_Tracking_Clean.jl", file) || include(joinpath(root, file))
     end
