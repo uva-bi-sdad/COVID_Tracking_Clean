@@ -28,15 +28,20 @@ For more infomation on our [COVID-19 Research](https://nssac.github.io/covid-19/
 This repository takes data from: [COVID Tracking Data (CSV)](https://github.com/COVID19Tracking/covid-tracking-data) and provides a clean table under `data/daily.tsv`.
 
 ## Data schema
-
-- `state::char(2) NOT null`
-- `checkts::timestampt NOT null`
-- `positive::integer`
-- `negative::integer`
-- `pending::integer`
-- `hospitalized::integer`
-- `death::integer`
-- `grade::char(1)`
+- `state :: char(2) NOT null`
+- `checkts :: timestampt NOT null`
+- `positive :: integer`
+- `negative :: integer`
+- `pending :: integer`
+- `hospitalized_currently :: integer`
+- `hospitalized_cumulative :: integer`
+- `icu_currently :: integer`
+- `icu_cumulative :: integer`
+- `ventilation_currently :: integer`
+- `ventilation_cumulative :: integer`
+- `recovered :: integer`
+- `death :: integer`
+- `data_quality_grade :: varchar(2)`
 
 per the specification from the COVID Tracking Project [metadata](https://covidtracking.com/about-tracker).
 
