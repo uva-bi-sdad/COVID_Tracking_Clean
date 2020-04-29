@@ -9,7 +9,8 @@ function get_sha(obj, directory::AbstractString = "data", file::AbstractString =
     node_[findfirst(elem -> elem.name == file, node_)].oid
 end
 """
-    find_shas(id::AbstractString = "MDEwOlJlcG9zaXRvcnkyNDY0MTE2MDc=",
+    find_shas(obj::GitHubPersonalAccessToken,
+              id::AbstractString = "MDEwOlJlcG9zaXRvcnkyNDY0MTE2MDc=",
               directory::AbstractString = "data",
               file::AbstractString = "states_current.csv",
               just_last::Bool = false)
@@ -56,7 +57,7 @@ function find_shas(obj::GitHubPersonalAccessToken,
     @assert total ≤ 1_000 "Code needs to be updated for more than 1,000 commits!"
     # If there are more than 100 commits we paginate
     while json.data.node.defaultBranchRef.target.history.pageInfo.hasNextPage
-        response = graphql(opt.pat,
+        response = graphql(obj,
                            "Magic",
                            merge(vars, Dict("cursor" => json.data.node.defaultBranchRef.target.history.pageInfo.endCursor)),
                            GITHUB_API_QUERY = GITHUB_API_QUERY)
