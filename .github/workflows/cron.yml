@@ -16,18 +16,18 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        julia-version: [1.4.0]
+        julia-version: [1.4.1]
         julia-arch: [x64]
         os: [ubuntu-latest]
     steps:
-      - uses: actions/checkout@v1.0.0
+      - uses: actions/checkout@v2
       - uses: julia-actions/setup-julia@latest
         with:
           version: ${{ matrix.julia-version }}
       - uses: julia-actions/julia-buildpkg@v0.1.0
       - name: Update data/daily.tsv
         env:
-            POSTGRES_HOST: localhost
-            POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
+            PGHOST: localhost
+            PGPORT: ${{ job.services.postgres.ports[5432] }}
             PAT: ${{ secrets.PAT }}
         run: julia --proj -e 'using Pkg; Pkg.instantiate(); using COVID_Tracking_Clean; COVID_Tracking_Clean.main()'
