@@ -13,6 +13,7 @@ on:
       - '.github/SECURITY.md'
       - '.github/SUPPORT.md'
       - '.github/CompatHelper.yml'
+      - '.github/cron.yml'
       - 'data/daily.tsv'
   pull_request:
     branches:
@@ -27,6 +28,7 @@ on:
       - '.github/SECURITY.md'
       - '.github/SUPPORT.md'
       - '.github/CompatHelper.yml'
+      - '.github/cron.yml'
   release:
     types:
       - created

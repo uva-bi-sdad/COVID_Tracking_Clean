@@ -1,7 +1,7 @@
 name: CRON
 on:
     schedule:
-      - cron: '0 22 * * *'
+      - cron: '5 4 * * *'
 jobs:
   cron:
     services:
