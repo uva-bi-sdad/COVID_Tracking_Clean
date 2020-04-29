@@ -9,7 +9,8 @@ function get_sha(obj, directory::AbstractString = "data", file::AbstractString =
     node_[findfirst(elem -> elem.name == file, node_)].oid
 end
 """
-    find_shas(id::AbstractString = "MDEwOlJlcG9zaXRvcnkyNDY0MTE2MDc=",
+    find_shas(obj::GitHubPersonalAccessToken,
+              id::AbstractString = "MDEwOlJlcG9zaXRvcnkyNDY0MTE2MDc=",
               directory::AbstractString = "data",
               file::AbstractString = "states_current.csv",
               just_last::Bool = false)
@@ -26,6 +27,7 @@ function find_shas(obj::GitHubPersonalAccessToken,
     # id = "MDEwOlJlcG9zaXRvcnkyNDY0MTE2MDc="
     # directory = "data"
     # file = "states_current.csv"
+    # just_last = false
     # The node ID is the repository with slug COVID19Tracking/covid-tracking-data
     # The file that has the information we want is at: data/states_current.csv
 
@@ -55,8 +57,8 @@ function find_shas(obj::GitHubPersonalAccessToken,
     @assert total ≤ 1_000 "Code needs to be updated for more than 1,000 commits!"
     # If there are more than 100 commits we paginate
     while json.data.node.defaultBranchRef.target.history.pageInfo.hasNextPage
-        response = graphql(opt.pat,
-                           "Continue",
+        response = graphql(obj,
+                           "Magic",
                            merge(vars, Dict("cursor" => json.data.node.defaultBranchRef.target.history.pageInfo.endCursor)),
                            GITHUB_API_QUERY = GITHUB_API_QUERY)
         json = JSON3.read(response.Data)
@@ -75,24 +77,29 @@ Uses the SHA1 to download from GitHub the version of [COVID19Tracking/covid-trac
 function get_tbl(obj::GitHubPersonalAccessToken, sha::AbstractString)
     response = restful(obj, "repos/COVID19Tracking/covid-tracking-data/git/blobs/$sha")
     @assert response.status == 200
-    json = JSON3.read(String(response.body))
+    json = JSON3.read(response.body)
     data = File(base64decode(json.content),
-                select = [:state, :positiveScore, :negativeScore, :negativeRegularScore, :commercialScore, :checkTimeEt]) |>
-        DataFrame |>
-        dropmissing!
-    colnames = schema(data).names
-    valid = all(elem -> elem ∈ colnames,
-                (:positiveScore, :negativeScore, :negativeRegularScore, :commercialScore))
-    if valid
+                # select = [:state, :positiveScore, :negativeScore, :negativeRegularScore, :commercialScore, :checkTimeEt, :dataQualityGrade]) |>
+    ) |>
+        DataFrame
+        names(data)
+    colnames = names(data)
+    if :dataQualityGrade in colnames
+        data = dropmissing!(data[!,[:state, :checkTimeEt, :dataQualityGrade]])
+        data[!,:checkTimeEt] = ZonedDateTime.(string.("2020/", data.checkTimeEt, " America/New_York"),
+                                              COVID_TRACKING_DT)
+    elseif all(elem -> elem ∈ colnames, (:positiveScore, :negativeScore, :negativeRegularScore, :commercialScore))
+        data = dropmissing!(data[!,[:state, :checkTimeEt, :positiveScore, :negativeScore, :negativeRegularScore, :commercialScore]])
         data[!,:positiveScore] = isone.(data.positiveScore)
         data[!,:negativeScore] = isone.(data.negativeScore)
         data[!,:negativeRegularScore] = isone.(data.negativeRegularScore)
         data[!,:commercialScore] = isone.(data.commercialScore)
         data[!,:checkTimeEt] = ZonedDateTime.(string.("2020/", data.checkTimeEt, " America/New_York"),
                                               COVID_TRACKING_DT)
-        data[!,:grade] = get.(Ref(Dict(1 => "D", 2 => "C", 3 => "B", 4 => "A")),
+        data[!,:dataQualityGrade] = get.(Ref(Dict(1 => "D", 2 => "C", 3 => "B", 4 => "A")),
                               data.positiveScore + data.negativeScore + data.negativeRegularScore + data.commercialScore,
                               missing)
+        data = data[!,[:state, :checkTimeEt, :dataQualityGrade]]
     else
         data = DataFrame()
     end
@@ -107,34 +114,20 @@ function states_daily()
     response = request("GET", "https://covidtracking.com/api/states/daily.csv")
     @assert response.status == 200
     data = File(response.body) |>
-        (tbl -> select(tbl, :state, :dateChecked, :positive, :negative, :pending, :hospitalized, :death)) |>
+        (tbl -> select(tbl, :state, :dateChecked,
+                            :positive, :negative, :pending,
+                            :hospitalizedCurrently, :hospitalizedCumulative,
+                            :inIcuCurrently, :inIcuCumulative,
+                            :onVentilatorCurrently, :onVentilatorCumulative,
+                            :recovered, :death)) |>
         DataFrame
     data[!,:dateChecked] = ZonedDateTime.(data.dateChecked, DateFormat("yyyy-mm-ddTHH:MM:SSz"))
-    rename!(data, :dateChecked => :checkts)
-end
-"""
-    prune(tbl)::DataFrame
-
-Simplifies the grade tsrange.
-"""
-function prune(tbl)
-    @assert !isempty(tbl)
-    tbl = sort(tbl)
-    state = first(tbl.state)
-    output = DataFrame([String, Interval{ZonedDateTime}, String], [:state, :checkTimeEt, :grade], 0)
-    start_date, start_grade = tbl[1,[:checkTimeEt, :grade]]
-    for row in eachrow(view(tbl, 2:size(tbl, 1), 1:3))
-        if row.grade ≠ start_grade
-            push!(output, (state = state,
-                           checkTimeEt = Interval(start_date, row.checkTimeEt, true, false),
-                           grade = start_grade))
-            start_date = row.checkTimeEt
-            start_grade = row.grade
-        end
-    end
-    push!(output,
-          (state = state,
-           checkTimeEt = Interval(start_date, tbl.checkTimeEt[end], true, true),
-           grade = start_grade))
-    output
+    rename!(data, :dateChecked => :checkts,
+                  :hospitalizedCurrently => :hospitalized_currently,
+                  :hospitalizedCumulative => :hospitalized_cumulative,
+                  :inIcuCurrently => :icu_currently,
+                  :inIcuCumulative => :icu_cumulative,
+                  :onVentilatorCurrently => :ventilator_currently,
+                  :onVentilatorCumulative => :ventilator_cumulative,
+                  )
 end
