@@ -4,11 +4,11 @@ This is a tool by the Network Systems Science and Advanced Computing (NSSAC) div
 
 For more infomation on our [COVID-19 Research](https://nssac.github.io/covid-19/index) visit our website.
 
-| **Documentation** | **Continous Integration**        |
-|:-----------------:|:--------------------------------:|
-| [![][dsi]][dsu]   | [![CI][bsi]][bsu]                |
-| [![][ddi]][ddu]   | [![CRON][croni]][cronu]          |
-| [![][li]][lu]     | [![codecov][codecovi]][codecovu] |
+| **Documentation** |
+|:-----------------:|
+| [![][dsi]][dsu]   | 
+| [![][ddi]][ddu]   | 
+| [![][li]][lu]     | 
 
 [ddi]: https://img.shields.io/badge/docs-dev-blue?style=plastic
 [ddu]: https://uva-bi-sdad.github.io/COVID_Tracking_Clean/dev/
@@ -25,4 +25,4 @@ For more infomation on our [COVID-19 Research](https://nssac.github.io/covid-19/
 [codecovi]: https://codecov.io/gh/uva-bi-sdad/COVID_Tracking_Clean/branch/master/graph/badge.svg
 [codecovu]: https://codecov.io/gh/uva-bi-sdad/COVID_Tracking_Clean
 
-This repository maintained a daily up-to-date copy of the daily [COVID Tracking public API](https://covidtracking.com/api) Historic state data (`/daily`) endpoint. The `dataQualityGrade` variable has now been added to the endpoint. This repository still offers the historical data for before 2020-04-21. For data after 2020-04-21 one can use the API directly.
+This repository maintained a daily up-to-date copy of the daily [COVID Tracking public API](https://covidtracking.com/api) Historic state data (`/daily`) endpoint enhanced with the state reporting data quality data. The `dataQualityGrade` variable has now been added to the endpoint. This repository still offers the historical data for before 2020-04-21. For data after 2020-04-21 one can use the API directly.
