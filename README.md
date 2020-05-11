@@ -25,29 +25,4 @@ For more infomation on our [COVID-19 Research](https://nssac.github.io/covid-19/
 [codecovi]: https://codecov.io/gh/uva-bi-sdad/COVID_Tracking_Clean/branch/master/graph/badge.svg
 [codecovu]: https://codecov.io/gh/uva-bi-sdad/COVID_Tracking_Clean
 
-This repository takes data from: [COVID Tracking Data (CSV)](https://github.com/COVID19Tracking/covid-tracking-data) and provides a clean table under `data/daily.tsv`.
-
-## Data schema
-- `state :: char(2) NOT null`
-- `checkts :: timestampt NOT null`
-- `positive :: integer`
-- `negative :: integer`
-- `pending :: integer`
-- `hospitalized_currently :: integer`
-- `hospitalized_cumulative :: integer`
-- `icu_currently :: integer`
-- `icu_cumulative :: integer`
-- `ventilation_currently :: integer`
-- `ventilation_cumulative :: integer`
-- `recovered :: integer`
-- `death :: integer`
-- `data_quality_grade :: varchar(2)`
-
-per the specification from the COVID Tracking Project [metadata](https://covidtracking.com/about-tracker).
-
-It runs daily at `22:00:00.000 UTC` (i.e., after 17:00 `America/New_York` when the data is updated daily)
-
-## Related issues:
-- [Adding grade and score to states/daily](https://github.com/COVID19Tracking/covid-tracking-api/issues/11)
-- [Add state grades to historical data](https://github.com/COVID19Tracking/covid-tracking-data/issues/22)
-- [api/state/daily Is out of date with spreadsheet](https://github.com/COVID19Tracking/covid-tracking-api/issues/30)
+This repository maintained a daily up-to-date copy of the daily [COVID Tracking public API](https://covidtracking.com/api) Historic state data (`/daily`) endpoint. The `dataQualityGrade` variable has now been added to the endpoint. This repository still offers the historical data for before 2020-04-21. For data after 2020-04-21 one can use the API directly.
